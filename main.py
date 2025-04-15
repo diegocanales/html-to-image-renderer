@@ -13,6 +13,11 @@ class RenderRequest(BaseModel):
     width: int = 1080
     height: int = 1920
 
+class WebRenderRequest(BaseModel):
+    url: str
+    width: int = 1080
+    height: int = 1920
+
 @app.get("/health")
 async def health_check():
     return {"status": "ok"}
@@ -33,5 +38,20 @@ async def render_image(render_data: RenderRequest):
             await browser.close()
         
         return FileResponse("output.png", media_type="image/png")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/render-webpage")
+async def render_webpage(render_data: WebRenderRequest):
+    try:
+        async with async_playwright() as p:
+            browser = await p.chromium.launch(args=['--no-sandbox'])
+            page = await browser.new_page(viewport={'width': render_data.width, 'height': render_data.height})
+            
+            await page.goto(render_data.url, wait_until='networkidle')
+            await page.screenshot(path='webpage_output.png')
+            await browser.close()
+        
+        return FileResponse("webpage_output.png", media_type="image/png")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
