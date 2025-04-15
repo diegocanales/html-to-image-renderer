@@ -54,6 +54,21 @@ Request body:
 }
 ```
 
+### Render Webpage
+```
+POST /render-webpage
+Content-Type: application/json
+```
+
+Request body:
+```json
+{
+    "url": string,            // URL of the webpage to render
+    "width": number,          // Image width (default: 1080)
+    "height": number          // Image height (default: 1920)
+}
+```
+
 ## Usage Example
 
 ### Sample Request:
@@ -91,6 +106,19 @@ POST /render
     "width": 1080,
     "height": 1920
 }
+```
+
+### Sample Webpage Render Request:
+
+```bash
+curl -X POST "http://localhost:8000/render-webpage" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "url": "https://www.google.com",
+       "width": 1920,
+       "height": 1080
+     }' \
+     --output screenshot.png
 ```
 
 ## Important Notes

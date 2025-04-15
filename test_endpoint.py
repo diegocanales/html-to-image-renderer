@@ -1,6 +1,5 @@
 import requests
-import json
-import base64
+
 from pathlib import Path
 
 def test_image_renderer():
