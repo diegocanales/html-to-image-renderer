@@ -2,17 +2,16 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from playwright.async_api import async_playwright
 from pydantic import BaseModel
-from jinja2 import Environment, FileSystemLoader, BaseLoader
-import os
+from jinja2 import Environment, BaseLoader
+
 
 app = FastAPI()
 
-# Definir el modelo de datos esperado
 class RenderRequest(BaseModel):
-    html_content: str  # El HTML completo a renderizar
-    params: dict  # Parámetros para renderizar el template
-    width: int = 1080  # valor por defecto
-    height: int = 1920  # valor por defecto
+    html_content: str
+    params: dict
+    width: int = 1080
+    height: int = 1920
 
 @app.get("/health")
 async def health_check():
@@ -21,7 +20,6 @@ async def health_check():
 @app.post("/render")
 async def render_image(render_data: RenderRequest):
     try:
-        # Renderizar el HTML con los parámetros proporcionados
         template = Environment(loader=BaseLoader()).from_string(render_data.html_content)
         rendered_html = template.render(**render_data.params)
 
